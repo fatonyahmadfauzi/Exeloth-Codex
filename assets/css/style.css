@@ -1,0 +1,98 @@
+:root {
+    --primary-color: #6f42c1;
+    --secondary-color: #0dcaf0;
+    --dark-color: #212529;
+    --darker-color: #1a1d20;
+    --light-color: #f8f9fa;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--darker-color);
+    color: var(--light-color);
+    padding-top: 76px;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+.jumbotron-section {
+    background: linear-gradient(135deg, var(--dark-color) 0%, var(--darker-color) 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.bg-darker {
+    background-color: var(--darker-color) !important;
+}
+
+.card {
+    border: none;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.game-card {
+    height: 100%;
+}
+
+.game-card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.badge-section {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 5px 15px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.story-section {
+    margin-bottom: 3rem;
+}
+
+.chapter-item {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.chapter-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.modal-content {
+    border-radius: 12px;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #5a32a3;
+    border-color: #5a32a3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .jumbotron-section {
+        text-align: center;
+    }
+}

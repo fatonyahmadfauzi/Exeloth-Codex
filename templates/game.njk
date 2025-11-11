@@ -1,0 +1,92 @@
+{% extends "base.njk" %}
+
+{% block title %}{{ game.title }} - Exeloth Codex{% endblock %}
+
+{% block content %}
+<!-- Game Profile Section -->
+<section class="py-5 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="{{ game.thumbnailURL }}" class="img-fluid rounded" alt="{{ game.title }}">
+            </div>
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold">{{ game.title }}</h1>
+                <p class="lead">{{ game.description }}</p>
+                <div class="mb-4">
+                    <h5>Story Sections Included:</h5>
+                    {% if 'main_story' in game.includes %}
+                    <span class="badge-section">📘 Main Story</span>
+                    {% endif %}
+                    {% if 'character_story' in game.includes %}
+                    <span class="badge-section">👤 Character Story</span>
+                    {% endif %}
+                    {% if 'side_story' in game.includes %}
+                    <span class="badge-section">🌿 Side Story</span>
+                    {% endif %}
+                    {% if 'event_story' in game.includes %}
+                    <span class="badge-section">🎉 Event Story</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Story Sections -->
+<section class="py-5 bg-dark">
+    <div class="container">
+        {% if sections.main_story and sections.main_story.length > 0 %}
+        <div class="story-section">
+            <h3 class="mb-4">📘 Main Story</h3>
+            <div class="row">
+                {% for chapter in sections.main_story %}
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="chapter-item" data-bs-toggle="modal" data-bs-target="#chapterModal" 
+                         data-title="{{ chapter.title }}" data-content="{{ chapter.content }}">
+                        <h5>{{ chapter.title }}</h5>
+                        <p class="text-muted mb-0">Click to read</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<!-- Chapter Modal -->
+<div class="modal fade" id="chapterModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="chapterModalTitle">Chapter Title</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="chapterModalContent">
+                <!-- Chapter content will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Chapter modal functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const chapterModal = document.getElementById('chapterModal');
+    if (chapterModal) {
+        chapterModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const title = button.getAttribute('data-title');
+            const content = button.getAttribute('data-content');
+            
+            document.getElementById('chapterModalTitle').textContent = title;
+            document.getElementById('chapterModalContent').innerHTML = content;
+        });
+    }
+});
+</script>
+{% endblock %}

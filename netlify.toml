@@ -1,0 +1,41 @@
+[build]
+  publish = "."
+  command = "npm run build"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# HANYA deklarasi variable names, TANPA values
+[context.production.environment]
+  FIREBASE_API_KEY = ""
+  IMGBB_API_KEY = ""
+  NODE_ENV = "production"
+
+[context.deploy-preview.environment]
+  FIREBASE_API_KEY = ""
+  IMGBB_API_KEY = ""
+  NODE_ENV = "development"
+
+# Redirects untuk Nunjucks templates
+[[redirects]]
+  from = "/game/:slug"
+  to = "/.netlify/functions/render-template/game?slug=:slug"
+  status = 200
+
+[[redirects]]
+  from = "/"
+  to = "/.netlify/functions/render-template"
+  status = 200
+
+# Static assets
+[[redirects]]
+  from = "/assets/*"
+  to = "/assets/:splat"
+  status = 200
+
+# Admin pages (static)
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200

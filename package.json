@@ -1,0 +1,16 @@
+{
+  "name": "exeloth-codex",
+  "version": "1.0.0",
+  "description": "Gacha game story portal",
+  "scripts": {
+    "build": "node netlify/inject-env.js",
+    "deploy": "netlify deploy --prod --dir=."
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7",
+    "nunjucks": "^3.2.4"
+  },
+  "devDependencies": {
+    "netlify-cli": "^15.0.0"
+  }
+}

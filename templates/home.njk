@@ -1,0 +1,39 @@
+{% extends "base.njk" %}
+
+{% block title %}Exeloth Codex - The best source of guides for your favorite gacha games{% endblock %}
+
+{% block content %}
+<!-- Jumbotron -->
+<section class="jumbotron-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">The best source of guides for your favorite gacha games</h1>
+                <p class="lead mb-4">Exeloth Codex provides news, tier lists and detailed guides for Honkai: Star Rail, Wuthering Waves, Zenless Zone Zero, Reverse 1999 and other gacha games. Everything you need in one place!</p>
+                <a href="#popular-games" class="btn btn-primary btn-lg">Explore Popular Games</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Games Section -->
+<section id="popular-games" class="py-5 bg-dark">
+    <div class="container">
+        <h2 class="text-center mb-5">Popular Games</h2>
+        <div class="row">
+            {% for game in games %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card game-card bg-dark h-100">
+                    <img src="{{ game.thumbnailURL }}" class="card-img-top" alt="{{ game.title }}" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ game.title }}</h5>
+                        <p class="card-text">{{ game.description }}</p>
+                        <a href="/game/{{ game.slug }}" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
