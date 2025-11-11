@@ -1,71 +1,17 @@
-# Firebase Configuration - JANGAN push ke GitHub!
-assets/js/firebase-config.js
-
-# Environment Variables
-.env
-.env.local
-.env.production
-.env.development
-
-# Netlify
-.netlify/
-functions/
-
-# Node.js dependencies
+# Node.js
 node_modules/
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
-# Build outputs
-dist/
-build/
-*.tgz
-*.tar.gz
+# Environment Files (development only)
+.env
+.env.local
 
-# OS generated files
+# System Files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# IDE and Editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
 # Logs
-logs
 *.log
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
-
-# Dependency directories
-jspm_packages/
-
-# Optional npm cache directory
-.npm
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# Local Netlify folder
-.netlify
+# 🔐 UNTUK SEKARANG, firebase-config.js BOLEH di-push
+# Karena API key sudah terekspos dan untuk memudahkan deploy
