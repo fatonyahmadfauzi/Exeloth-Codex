@@ -82,7 +82,11 @@
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label for="game-slug" class="form-label">Slug (URL-friendly)</label>
-                                                <input type="text" class="form-control" id="game-slug" required>
+                                                <input type="text" class="form-control" id="game-slug" 
+                                                    placeholder="Will auto-generate from title">
+                                                <div class="form-text">
+                                                    Leave empty to auto-generate from title. Format: lowercase, hyphen-separated.
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -393,23 +397,6 @@
         uploadPlaceholder.style.display = 'block';
         uploadPreview.style.display = 'none';
       }
-
-      // Auto-generate slug from title
-      document.getElementById('game-title').addEventListener('input', function() {
-        const title = this.value;
-        const slugInput = document.getElementById('game-slug');
-        
-        if (title && !slugInput.value) {
-          const slug = title
-            .toLowerCase()
-            .replace(/[^a-z0-9 -]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-')
-            .trim();
-          
-          slugInput.value = slug;
-        }
-      });
 
       // Enter key to submit admin form
       document.getElementById('new-admin-email')?.addEventListener('keypress', function(e) {

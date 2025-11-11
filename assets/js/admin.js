@@ -118,14 +118,33 @@ async function uploadToImgBB(imageFile) {
     });
 }
 
+// ✅ FUNCTION TO GENERATE SLUG
+function generateSlug(text) {
+    return text
+        .toLowerCase()
+        .replace(/[^a-z0-9 -]/g, '')     // Remove invalid chars
+        .replace(/\s+/g, '-')            // Replace spaces with -
+        .replace(/-+/g, '-')             // Replace multiple - with single -
+        .replace(/^-+/, '')              // Trim - from start
+        .replace(/-+$/, '')              // Trim - from end
+        .trim();
+}
+
 // Handle game form submission dengan Netlify Function upload
 async function handleGameSubmit(e) {
     e.preventDefault();
     
     const title = document.getElementById('game-title').value;
-    const slug = document.getElementById('game-slug').value;
+    let slug = document.getElementById('game-slug').value; // pakai let, bukan const
     const description = document.getElementById('game-description').value;
     const thumbnailFile = document.getElementById('game-thumbnail').files[0];
+    
+    // ✅ AUTO-GENERATE SLUG JIKA KOSONG
+    if (!slug && title) {
+        slug = generateSlug(title);
+        document.getElementById('game-slug').value = slug; // Update field juga
+        console.log('✅ Auto-generated slug:', slug);
+    }
     
     // Get included sections
     const includes = [];
@@ -154,6 +173,12 @@ async function handleGameSubmit(e) {
     // Validate file type
     if (!thumbnailFile.type.startsWith('image/')) {
         alert('Please select a valid image file (PNG, JPG, GIF)');
+        return;
+    }
+
+    // ✅ VALIDATE SLUG FORMAT
+    if (!/^[a-z0-9-]+$/.test(slug)) {
+        alert('Slug can only contain lowercase letters, numbers, and hyphens');
         return;
     }
 
