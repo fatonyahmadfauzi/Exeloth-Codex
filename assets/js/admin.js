@@ -1,20 +1,38 @@
 // assets/js/admin.js
 
-// Admin functionality dengan Netlify Function upload
+// Admin functionality dengan Firestore admin verification
 let currentUser = null;
 
 // Initialize admin panel
 function initAdminPanel() {
     // Check authentication state
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(async (user) => {
         if (user) {
-            currentUser = user;
-            document.getElementById('auth-section').classList.add('d-none');
-            document.getElementById('admin-panel').classList.remove('d-none');
-            loadGameSlugs();
-            
-            console.log('Admin logged in:', user.email);
+            try {
+                // Check if user is in admins collection
+                const adminDoc = await db.collection('admins').doc(user.email).get();
+                
+                if (adminDoc.exists) {
+                    // ✅ ADMIN ACCESS GRANTED
+                    currentUser = user;
+                    document.getElementById('auth-section').classList.add('d-none');
+                    document.getElementById('admin-panel').classList.remove('d-none');
+                    loadGameSlugs();
+                    loadAdminList(); // Load list of admins
+                    
+                    console.log('✅ Admin access granted:', user.email);
+                } else {
+                    // ❌ NOT ADMIN - Show access denied
+                    showAccessDenied(user.email);
+                    auth.signOut();
+                }
+            } catch (error) {
+                console.error('Error checking admin access:', error);
+                showAccessDenied(user.email);
+                auth.signOut();
+            }
         } else {
+            // Not logged in
             currentUser = null;
             document.getElementById('auth-section').classList.remove('d-none');
             document.getElementById('admin-panel').classList.add('d-none');
@@ -34,12 +52,32 @@ function signInWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider)
         .then((result) => {
-            console.log('Signed in successfully:', result.user);
+            console.log('Signed in successfully:', result.user.email);
+            // Verification akan dilakukan di authStateChanged
         })
         .catch((error) => {
             console.error('Error signing in:', error);
             alert('Error signing in: ' + error.message);
         });
+}
+
+// Show access denied message
+function showAccessDenied(userEmail) {
+    document.getElementById('auth-section').innerHTML = `
+        <div class="card bg-dark">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="bi bi-shield-x display-1 text-danger"></i>
+                </div>
+                <h4 class="text-danger">Access Denied</h4>
+                <p class="mb-3">Admin panel access is restricted to authorized users only.</p>
+                <p class="text-muted small">Logged in as: ${userEmail}</p>
+                <button onclick="firebase.auth().signOut()" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-box-arrow-right me-1"></i> Sign Out
+                </button>
+            </div>
+        </div>
+    `;
 }
 
 // Function to upload image via Netlify Function
@@ -51,7 +89,7 @@ async function uploadToImgBB(imageFile) {
             try {
                 const imageData = e.target.result;
                 
-                // ✅ BENAR - Gunakan Netlify Function, bukan direct API call
+                // ✅ Gunakan Netlify Function, bukan direct API call
                 const response = await fetch('/.netlify/functions/imgbb-upload', {
                     method: 'POST',
                     headers: {
@@ -269,6 +307,146 @@ function clearFileUpload() {
     document.getElementById('game-thumbnail').value = '';
     document.getElementById('upload-placeholder').style.display = 'block';
     document.getElementById('upload-preview').style.display = 'none';
+}
+
+// ==================== ADMIN MANAGEMENT FUNCTIONS ====================
+
+// Function to add new admin
+async function addAdmin() {
+    const newAdminEmail = document.getElementById('new-admin-email').value;
+    const newAdminName = document.getElementById('new-admin-name').value;
+    
+    if (!newAdminEmail || !newAdminName) {
+        alert('Please fill in both email and name');
+        return;
+    }
+    
+    // Validate email format
+    if (!newAdminEmail.includes('@')) {
+        alert('Please enter a valid email address');
+        return;
+    }
+    
+    try {
+        // Check if admin already exists
+        const existingAdmin = await db.collection('admins').doc(newAdminEmail).get();
+        if (existingAdmin.exists) {
+            alert('❌ Admin with this email already exists!');
+            return;
+        }
+        
+        // Add to admins collection
+        await db.collection('admins').doc(newAdminEmail).set({
+            email: newAdminEmail,
+            name: newAdminName,
+            role: 'admin',
+            addedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            addedBy: currentUser.email
+        });
+        
+        alert('✅ Admin added successfully!');
+        document.getElementById('new-admin-email').value = '';
+        document.getElementById('new-admin-name').value = '';
+        
+        // Refresh admin list
+        loadAdminList();
+        
+    } catch (error) {
+        console.error('Error adding admin:', error);
+        alert('❌ Error adding admin: ' + error.message);
+    }
+}
+
+// Function to load admin list
+async function loadAdminList() {
+    try {
+        const querySnapshot = await db.collection('admins').orderBy('addedAt', 'desc').get();
+        const adminList = document.getElementById('admin-list');
+        
+        adminList.innerHTML = '';
+        
+        if (querySnapshot.empty) {
+            adminList.innerHTML = `
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-people display-6"></i>
+                    <p>No admins found</p>
+                </div>
+            `;
+            return;
+        }
+        
+        querySnapshot.forEach((doc) => {
+            const admin = doc.data();
+            const adminItem = document.createElement('div');
+            adminItem.className = 'admin-item d-flex justify-content-between align-items-center p-3 border-bottom';
+            adminItem.innerHTML = `
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center">
+                        <strong>${admin.name}</strong>
+                        <span class="badge ${admin.role === 'superadmin' ? 'bg-warning' : 'bg-primary'} ms-2">${admin.role}</span>
+                    </div>
+                    <div class="text-muted small">${admin.email}</div>
+                    <div class="text-muted smaller">Added: ${formatDate(admin.addedAt?.toDate())} by ${admin.addedBy || 'system'}</div>
+                </div>
+                <div>
+                    <button class="btn btn-sm btn-outline-danger" onclick="removeAdmin('${admin.email}')" 
+                            ${admin.role === 'superadmin' || admin.email === currentUser.email ? 'disabled' : ''}
+                            title="${admin.role === 'superadmin' ? 'Cannot remove superadmin' : admin.email === currentUser.email ? 'Cannot remove yourself' : 'Remove admin'}">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            `;
+            adminList.appendChild(adminItem);
+        });
+        
+    } catch (error) {
+        console.error('Error loading admin list:', error);
+        document.getElementById('admin-list').innerHTML = `
+            <div class="alert alert-danger">
+                Error loading admin list: ${error.message}
+            </div>
+        `;
+    }
+}
+
+// Function to remove admin
+async function removeAdmin(email) {
+    if (email === currentUser.email) {
+        alert('You cannot remove yourself!');
+        return;
+    }
+    
+    if (!confirm(`Are you sure you want to remove ${email} as admin?`)) {
+        return;
+    }
+    
+    try {
+        await db.collection('admins').doc(email).delete();
+        alert('✅ Admin removed successfully!');
+        loadAdminList();
+    } catch (error) {
+        console.error('Error removing admin:', error);
+        alert('❌ Error removing admin: ' + error.message);
+    }
+}
+
+// Helper function to format date
+function formatDate(date) {
+    if (!date) return 'Unknown';
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+// Sign out function
+function signOut() {
+    auth.signOut().then(() => {
+        console.log('Signed out successfully');
+    }).catch((error) => {
+        console.error('Error signing out:', error);
+    });
 }
 
 // Initialize admin panel when DOM is loaded
