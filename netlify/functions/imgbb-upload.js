@@ -1,5 +1,7 @@
 // netlify/functions/imgbb-upload.js
 const fetch = require('node-fetch');
+// Impor URLSearchParams karena ini environment Node.js
+const { URLSearchParams } = require('url');
 
 exports.handler = async (event) => {
   // Handle CORS
@@ -43,18 +45,24 @@ exports.handler = async (event) => {
 
     // Extract base64 data from data URL
     const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
-    const imageBuffer = Buffer.from(base64Data, 'base64');
 
-    // Create form data for ImgBB
-    const formData = new FormData();
-    const blob = new Blob([imageBuffer], { type: 'image/jpeg' });
-    formData.append('image', blob, fileName);
+    // === 👇 AWAL PERBAIKAN ===
+    // Buat body menggunakan URLSearchParams, bukan FormData
+    const body = new URLSearchParams();
+    // Kirim gambar sebagai string base64, ImgBB mendukung ini
+    body.append('image', base64Data);
 
     // Upload to ImgBB
     const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
       method: 'POST',
-      body: formData
+      headers: {
+        // Tentukan tipe konten yang benar
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      // Kirim body sebagai string
+      body: body.toString()
     });
+    // === 👆 AKHIR PERBAIKAN ===
 
     const data = await response.json();
 
@@ -69,6 +77,7 @@ exports.handler = async (event) => {
         })
       };
     } else {
+      // Kirim pesan error dari ImgBB jika ada
       return {
         statusCode: 400,
         headers,
