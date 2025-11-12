@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Panel - Exeloth Codex</title>
     
-    <!-- ✅ GUNAKUN UNPKG CDN -->
     <link href="https://unpkg.com/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -22,10 +21,25 @@
       .admin-item:hover { background: rgba(255, 255, 255, 0.08); }
       .admin-list { max-height: 400px; overflow-y: auto; }
       .smaller { font-size: 0.75rem; }
+
+      /* Style untuk Nav Tabs */
+      .nav-tabs .nav-link {
+        color: rgba(255, 255, 255, 0.7);
+        border: none;
+        border-bottom: 2px solid transparent;
+      }
+      .nav-tabs .nav-link:hover {
+        color: #fff;
+        border-bottom-color: rgba(255, 255, 255, 0.3);
+      }
+      .nav-tabs .nav-link.active {
+        color: #fff;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-bottom: 2px solid var(--primary-color);
+      }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
             <a class="navbar-brand fw-bold" href="index.html">Exeloth Codex</a>
@@ -47,7 +61,6 @@
         </div>
     </nav>
 
-    <!-- Admin Panel Content -->
     <section class="py-5 mt-5">
         <div class="container">
             <div class="row">
@@ -65,230 +78,241 @@
                     </div>
 
                     <div id="admin-panel" class="d-none">
-                        <!-- Game Management Form -->
-                        <div class="card bg-dark mb-4">
-                            <div class="card-header">
-                                <h3><i class="bi bi-controller me-2"></i>Game Management</h3>
-                            </div>
-                            <div class="card-body">
-                                <form id="game-form">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="game-title" class="form-label">Game Title</label>
-                                                <input type="text" class="form-control" id="game-title" required>
+
+                        <ul class="nav nav-tabs mb-4" id="adminTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="content-tab" data-bs-toggle="tab" data-bs-target="#content-management" type="button" role="tab" aria-controls="content-management" aria-selected="true">
+                                    <i class="bi bi-pencil-square me-1"></i> Manajemen Konten
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#admin-settings" type="button" role="tab" aria-controls="admin-settings" aria-selected="false">
+                                    <i class="bi bi-people-fill me-1"></i> Pengaturan Admin
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="adminTabContent">
+                            
+                            <div class="tab-pane fade show active" id="content-management" role="tabpanel" aria-labelledby="content-tab">
+                        
+                                <div class="card bg-dark mb-4">
+                                    <div class="card-header">
+                                        <h3><i class="bi bi-controller me-2"></i>Game Management</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="game-form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="game-title" class="form-label">Game Title</label>
+                                                        <input type="text" class="form-control" id="game-title" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="game-slug" class="form-label">Slug (URL-friendly)</label>
+                                                        <input type="text" class="form-control" id="game-slug" 
+                                                            placeholder="Will auto-generate from title">
+                                                        <div class="form-text">
+                                                            Leave empty to auto-generate from title. Format: lowercase, hyphen-separated.
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6">
+                                            
                                             <div class="mb-3">
-                                                <label for="game-slug" class="form-label">Slug (URL-friendly)</label>
-                                                <input type="text" class="form-control" id="game-slug" 
-                                                    placeholder="Will auto-generate from title">
+                                                <label for="game-description" class="form-label">Description</label>
+                                                <textarea class="form-control" id="game-description" rows="3" required></textarea>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label">Story Sections Included</label>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="main-story-check">
+                                                            <label class="form-check-label" for="main-story-check">
+                                                                <i class="bi bi-book me-1"></i> Main Story
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="character-story-check">
+                                                            <label class="form-check-label" for="character-story-check">
+                                                                <i class="bi bi-person me-1"></i> Character Story
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="side-story-check">
+                                                            <label class="form-check-label" for="side-story-check">
+                                                                <i class="bi bi-branch me-1"></i> Side Story
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="event-story-check">
+                                                            <label class="form-check-label" for="event-story-check">
+                                                                <i class="bi bi-calendar-event me-1"></i> Event Story
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label">Thumbnail Image</label>
+                                                
+                                                <div class="drag-drop-area" id="drag-drop-area">
+                                                    <div id="upload-placeholder">
+                                                        <i class="bi bi-cloud-arrow-up display-4 text-muted mb-3"></i>
+                                                        <p class="mb-1">Click to upload or drag and drop</p>
+                                                        <p class="text-muted small">PNG, JPG, GIF up to 32MB</p>
+                                                    </div>
+                                                    <div id="upload-preview" style="display: none;">
+                                                        <img id="thumbnail-preview" class="upload-preview" src="" alt="Preview">
+                                                        <p class="mt-2 mb-1" id="file-name"></p>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearFileUpload()">
+                                                            <i class="bi bi-x-circle me-1"></i> Remove
+                                                        </button>
+                                                    </div>
+                                                    <input type="file" id="game-thumbnail" accept="image/*" style="display: none;">
+                                                </div>
+                                                
                                                 <div class="form-text">
-                                                    Leave empty to auto-generate from title. Format: lowercase, hyphen-separated.
+                                                    Gambar akan diupload otomatis melalui sistem yang aman.
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="game-description" class="form-label">Description</label>
-                                        <textarea class="form-control" id="game-description" rows="3" required></textarea>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label">Story Sections Included</label>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="main-story-check">
-                                                    <label class="form-check-label" for="main-story-check">
-                                                        <i class="bi bi-book me-1"></i> Main Story
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="character-story-check">
-                                                    <label class="form-check-label" for="character-story-check">
-                                                        <i class="bi bi-person me-1"></i> Character Story
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="side-story-check">
-                                                    <label class="form-check-label" for="side-story-check">
-                                                        <i class="bi bi-branch me-1"></i> Side Story
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="event-story-check">
-                                                    <label class="form-check-label" for="event-story-check">
-                                                        <i class="bi bi-calendar-event me-1"></i> Event Story
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- File Upload Section -->
-                                    <div class="mb-3">
-                                        <label class="form-label">Thumbnail Image</label>
-                                        
-                                        <!-- Drag & Drop Area -->
-                                        <div class="drag-drop-area" id="drag-drop-area">
-                                            <div id="upload-placeholder">
-                                                <i class="bi bi-cloud-arrow-up display-4 text-muted mb-3"></i>
-                                                <p class="mb-1">Click to upload or drag and drop</p>
-                                                <p class="text-muted small">PNG, JPG, GIF up to 32MB</p>
-                                            </div>
-                                            <div id="upload-preview" style="display: none;">
-                                                <img id="thumbnail-preview" class="upload-preview" src="" alt="Preview">
-                                                <p class="mt-2 mb-1" id="file-name"></p>
-                                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearFileUpload()">
-                                                    <i class="bi bi-x-circle me-1"></i> Remove
+                                            
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-primary" id="game-submit-btn">
+                                                    <i class="bi bi-plus-circle me-1"></i> Create Game
                                                 </button>
                                             </div>
-                                            <input type="file" id="game-thumbnail" accept="image/*" style="display: none;">
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="card bg-dark mb-4">
+                                    <div class="card-header">
+                                        <h3><i class="bi bi-journal-text me-2"></i>Chapter Management</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="chapter-form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="chapter-game-slug" class="form-label">Game</label>
+                                                        <select class="form-control" id="chapter-game-slug" required>
+                                                            <option value="">Select a game</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="chapter-section" class="form-label">Section</label>
+                                                        <select class="form-control" id="chapter-section" required>
+                                                            <option value="">Select a section</option>
+                                                            <option value="main_story">Main Story</option>
+                                                            <option value="character_story">Character Story</option>
+                                                            <option value="side_story">Side Story</option>
+                                                            <option value="event_story">Event Story</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="chapter-title" class="form-label">Chapter Title</label>
+                                                <input type="text" class="form-control" id="chapter-title" required>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="chapter-content" class="form-label">Chapter Content</label>
+                                                <textarea class="form-control" id="chapter-content" rows="10" required></textarea>
+                                                <div class="form-text">
+                                                    Anda bisa menggunakan HTML tags untuk formatting.
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-primary" id="chapter-submit-btn">
+                                                    <i class="bi bi-plus-circle me-1"></i> Add Chapter
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="card bg-dark mb-4 guide-section">
+                                    <div class="card-header">
+                                        <h4><i class="bi bi-info-circle me-2"></i>Quick Guide</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6><i class="bi bi-1-circle me-2"></i>Upload Game:</h6>
+                                                <ol>
+                                                    <li>Isi data game (title, slug, description)</li>
+                                                    <li>Pilih story sections</li>
+                                                    <li><strong>Drag & drop</strong> thumbnail image</li>
+                                                    <li>Klik <strong>"Create Game"</strong></li>
+                                                    <li>Sistem akan otomatis upload gambar</li>
+                                                </ol>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6><i class="bi bi-2-circle me-2"></i>Add Chapter:</h6>
+                                                <ol>
+                                                    <li>Pilih game dari dropdown</li>
+                                                    <li>Pilih section (Main Story, Character Story, dll)</li>
+                                                    <li>Isi judul chapter</li>
+                                                    <li>Tulis konten chapter</li>
+                                                    <li>Klik <strong>"Add Chapter"</strong></li>
+                                                </ol>
+                                            </div>
                                         </div>
                                         
-                                        <div class="form-text">
-                                            Gambar akan diupload otomatis melalui sistem yang aman.
+                                        <div class="alert alert-info mt-3 mb-0">
+                                            <i class="bi bi-shield-check me-2"></i>
+                                            <strong>Secure:</strong> Semua upload dilakukan melalui sistem yang aman.
                                         </div>
                                     </div>
-                                    
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-primary" id="game-submit-btn">
-                                            <i class="bi bi-plus-circle me-1"></i> Create Game
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                                </div>
+                            
+                            </div> <div class="tab-pane fade" id="admin-settings" role="tabpanel" aria-labelledby="settings-tab">
 
-                        <!-- Chapter Management Form -->
-                        <div class="card bg-dark mb-4">
-                            <div class="card-header">
-                                <h3><i class="bi bi-journal-text me-2"></i>Chapter Management</h3>
-                            </div>
-                            <div class="card-body">
-                                <form id="chapter-form">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="chapter-game-slug" class="form-label">Game</label>
-                                                <select class="form-control" id="chapter-game-slug" required>
-                                                    <option value="">Select a game</option>
-                                                </select>
+                                <div class="card bg-dark mb-4">
+                                    <div class="card-header">
+                                        <h4><i class="bi bi-people me-2"></i>Admin Management</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-4">
+                                            <div class="col-md-5">
+                                                <label for="new-admin-email" class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="new-admin-email" placeholder="admin@example.com">
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label for="new-admin-name" class="form-label">Name</label>
+                                                <input type="text" class="form-control" id="new-admin-name" placeholder="Admin Name">
+                                            </div>
+                                            <div class="col-md-2 d-flex align-items-end">
+                                                <button class="btn btn-outline-success w-100" onclick="addAdmin()">
+                                                    <i class="bi bi-plus-circle me-1"></i> Add
+                                                </button>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="chapter-section" class="form-label">Section</label>
-                                                <select class="form-control" id="chapter-section" required>
-                                                    <option value="">Select a section</option>
-                                                    <option value="main_story">Main Story</option>
-                                                    <option value="character_story">Character Story</option>
-                                                    <option value="side_story">Side Story</option>
-                                                    <option value="event_story">Event Story</option>
-                                                </select>
+                                        
+                                        <h6>Current Admins:</h6>
+                                        <div id="admin-list" class="admin-list">
+                                            <div class="text-center text-muted py-3">
+                                                <i class="bi bi-people display-6"></i>
+                                                <p>Loading admin list...</p>
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="chapter-title" class="form-label">Chapter Title</label>
-                                        <input type="text" class="form-control" id="chapter-title" required>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="chapter-content" class="form-label">Chapter Content</label>
-                                        <textarea class="form-control" id="chapter-content" rows="10" required></textarea>
-                                        <div class="form-text">
-                                            Anda bisa menggunakan HTML tags untuk formatting.
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-primary" id="chapter-submit-btn">
-                                            <i class="bi bi-plus-circle me-1"></i> Add Chapter
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                                </div>
 
-                        <!-- Admin Management Section -->
-                        <div class="card bg-dark mb-4">
-                            <div class="card-header">
-                                <h4><i class="bi bi-people me-2"></i>Admin Management</h4>
-                            </div>
-                            <div class="card-body">
-                                <!-- Add New Admin Form -->
-                                <div class="row mb-4">
-                                    <div class="col-md-5">
-                                        <label for="new-admin-email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="new-admin-email" placeholder="admin@example.com">
-                                    </div>
-                                    <div class="col-md-5">
-                                        <label for="new-admin-name" class="form-label">Name</label>
-                                        <input type="text" class="form-control" id="new-admin-name" placeholder="Admin Name">
-                                    </div>
-                                    <div class="col-md-2 d-flex align-items-end">
-                                        <button class="btn btn-outline-success w-100" onclick="addAdmin()">
-                                            <i class="bi bi-plus-circle me-1"></i> Add
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <!-- Admin List -->
-                                <h6>Current Admins:</h6>
-                                <div id="admin-list" class="admin-list">
-                                    <div class="text-center text-muted py-3">
-                                        <i class="bi bi-people display-6"></i>
-                                        <p>Loading admin list...</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Quick Guide Section -->
-                        <div class="card bg-dark mb-4 guide-section">
-                            <div class="card-header">
-                                <h4><i class="bi bi-info-circle me-2"></i>Quick Guide</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <h6><i class="bi bi-1-circle me-2"></i>Upload Game:</h6>
-                                        <ol>
-                                            <li>Isi data game (title, slug, description)</li>
-                                            <li>Pilih story sections</li>
-                                            <li><strong>Drag & drop</strong> thumbnail image</li>
-                                            <li>Klik <strong>"Create Game"</strong></li>
-                                            <li>Sistem akan otomatis upload gambar</li>
-                                        </ol>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h6><i class="bi bi-2-circle me-2"></i>Add Chapter:</h6>
-                                        <ol>
-                                            <li>Pilih game dari dropdown</li>
-                                            <li>Pilih section (Main Story, Character Story, dll)</li>
-                                            <li>Isi judul chapter</li>
-                                            <li>Tulis konten chapter</li>
-                                            <li>Klik <strong>"Add Chapter"</strong></li>
-                                        </ol>
-                                    </div>
-                                </div>
-                                
-                                <div class="alert alert-info mt-3 mb-0">
-                                    <i class="bi bi-shield-check me-2"></i>
-                                    <strong>Secure:</strong> Semua upload dilakukan melalui sistem yang aman.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Sign Out Button -->
-                        <div class="card bg-dark">
+                            </div> </div> <div class="card bg-dark mt-4">
                             <div class="card-body text-center">
                                 <button class="btn btn-outline-secondary" onclick="signOut()">
                                     <i class="bi bi-box-arrow-right me-1"></i> Sign Out
@@ -301,22 +325,16 @@
         </div>
     </section>
 
-    <!-- ✅ URUTAN SCRIPT DENGUN UNPKG -->
-    <!-- 1. Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
-    <!-- 2. Firebase Config -->
     <script src="assets/js/firebase-config.js"></script>
     
-    <!-- 3. Bootstrap JS dari UNPKG -->
     <script src="https://unpkg.com/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- 4. Admin Logic -->
     <script src="assets/js/admin.js"></script>
     
-    <!-- 5. UI Scripts -->
     <script>
       // Drag & drop functionality
       const dragDropArea = document.getElementById('drag-drop-area');
