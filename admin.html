@@ -37,6 +37,30 @@
         background-color: rgba(255, 255, 255, 0.05);
         border-bottom: 2px solid var(--primary-color);
       }
+
+      /* === PERMINTAAN WARNA TEKS BARU === */
+      .card-header h3,
+      .card-header h4 {
+          color: #FFFFFF; /* Membuat header card menjadi putih */
+      }
+      
+      /* Konten Quick Guide */
+      .guide-section .card-body h6,
+      .guide-section .card-body ol,
+      .guide-section .card-body li {
+          color: #FFFFFF; /* Membuat teks guide menjadi putih */
+      }
+
+      /* Konten Daftar Admin */
+      .admin-item strong {
+          color: #FFFFFF; /* Membuat nama admin menjadi putih */
+      }
+      
+      .admin-item .badge.bg-warning {
+          color: #FFFFFF !important; /* Membuat teks badge superadmin (kuning) menjadi putih */
+      }
+      /* === AKHIR PERMINTAAN WARNA === */
+
     </style>
 </head>
 <body>
@@ -312,14 +336,15 @@
                                     </div>
                                 </div>
 
-                            </div> </div> <div class="card bg-dark mt-4">
-                            <div class="card-body text-center">
-                                <button class="btn btn-outline-secondary" onclick="signOut()">
-                                    <i class="bi bi-box-arrow-right me-1"></i> Sign Out
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                                <div class="card bg-dark mb-4">
+                                    <div class="card-body text-center">
+                                        <button class="btn btn-outline-secondary" onclick="signOut()">
+                                            <i class="bi bi-box-arrow-right me-1"></i> Sign Out
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div> </div> </div>
                 </div>
             </div>
         </div>
